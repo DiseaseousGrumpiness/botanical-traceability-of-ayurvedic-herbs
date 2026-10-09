@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Build/output
+dist/
+build/
+coverage/
+bin/
+tmp/
+logs/
+
+# Go
+*.exe
+*.test
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Docker
+*.log
+
+# Local databases/data
+*.db
+*.sqlite
+*.sqlite3
+
+# Fabric local runtime artifacts
+blockchain/network/organizations/
+blockchain/network/system-genesis-block/
+blockchain/network/channel-artifacts/
+blockchain/network/docker/
+blockchain/network/compose/
+
+# Generated chaincode artifacts
+*.tar.gz
+blockchain/chaincode/herb-traceability/herb-traceability
+blockchain/chaincode/herb-traceability/herb-traceability-chaincode
+
+# Local audit reports
+terminal-audit-*.txt
