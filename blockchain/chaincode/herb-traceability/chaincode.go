@@ -62,6 +62,9 @@ func (s *SmartContract) CreateBatch(
 	quantity float64,
 	unit string,
 ) error {
+	if err := validateBatchInput(batchID, herbName, scientificName, collectorID, location, latitude, longitude, collectionDate, quantity, unit); err != nil {
+		return err
+	}
 
 	exists, err := s.BatchExists(ctx, batchID)
 	if err != nil {
