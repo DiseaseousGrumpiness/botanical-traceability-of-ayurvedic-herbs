@@ -1,5 +1,138 @@
 # TESTING
 
+## As-built verification boundary
+
+## Finalization run (2026-11-25)
+
+This is the current authoritative result. Earlier dated plans and result tables
+below are historical snapshots and do not supersede this record.
+
+| Check | Result | Evidence type / boundary |
+|---|---|---|
+| Staff authentication | All five configured roles accepted by `/api/auth/me` | Live API; token values were not emitted |
+| Backend health | HTTP 200, API `2.1.0`, `fabricConnected: true` | Live API |
+| Dashboard and Vite proxy | 11 actual ledger batches: 7 pending, 3 approved, 1 rejected; 10 collected and 1 transferred | Live GET through browser-facing Vite proxy |
+| Synthetic registration | `FINAL-DEMO-SYNTH-20261125-001` committed and read back | Live ledger write; explicitly synthetic and permanently retained |
+| Quality | Processor APPROVED committed and read back | Live ledger write; human actor is not recorded by deployed transaction |
+| Ownership | Admin → Distributor → Retailer; final Retailer owner confirmed | Two live ledger writes |
+| History and verification | Four history events; Vite public verification route returned HTTP 200 | Live ledger read and frontend route |
+| Negative API checks | Collector quality attempt returned 403 without history change; unknown batch returned 404 | Live API; no ledger write on unauthorized request |
+| Phone/LAN scan | Not tested on a second device | Active Wi-Fi is Public; safe launcher refuses LAN demo on Public/unknown profiles |
+| Public deployment | Not deployed | No always-on host, domain, hosting access, or migration approval was available |
+
+The deployed contract has no cleanup transaction. The synthetic test batch and
+its registration, quality, and transfer history remain on `mychannel`; it is
+not a real supply-chain record and must be labelled synthetic during any
+presentation. No existing record was changed. The live write exercise tested
+APPROVED only; REJECTED behavior remains covered by automated tests only.
+
+The final automated suite results are listed in the results table below after
+rerunning checks for the current repository state. Backend route tests use a
+Fabric stub; IPFS adapter tests use a mocked Kubo response; Go chaincode tests
+use an in-memory stub. These are not live ledger evidence.
+
+| Command | Current result | Evidence type |
+|---|---|---|
+| `backend: npm test` | 25 passed, 0 failed | Express/Fabric contract stubs and mocked IPFS adapter; requires localhost test sockets |
+| `backend: npm run check` | Passed | Node syntax checks |
+| `frontend: npm test` | 12 passed, 0 failed | Dashboard, QR URL, traceability mapping, and write feedback unit tests |
+| `frontend: npm run build` | Passed; 1,654 modules transformed | Vite production build |
+| `go test ./...` | Passed | Chaincode tests with in-memory Fabric stub |
+| `go vet ./...` | Passed | Go static analysis |
+| PowerShell parser for `scripts/start-windows.ps1` | Passed | Syntax only; launcher not executed during this check |
+| `docker compose ... config --quiet` using the example environment | Passed | Compose interpolation/schema validation; no deployment containers started |
+
+The unprivileged backend test attempt failed because the sandbox denied its
+ephemeral loopback test-server connections (`EACCES`). The exact same test and
+syntax-check commands then passed with local socket access enabled. The active
+application was left running and read-only API/proxy checks returned health
+`ok`, API `2.1.0`, and Fabric connected.
+
+## Phone/LAN verification URL
+
+Automated tests cover QR URL selection: an explicit configured private app origin wins over the laptop's loopback browser origin, batch IDs are URL-encoded, and invalid/non-web origins do not produce a QR target. These tests do not verify phone reachability. For a live phone test, follow the README `-LanDemo` instructions on a trusted private network and confirm the phone can open the QR route and its proxied read-only batch/history responses. No firewall rule or router configuration is created by the launcher.
+
+The remainder of this document is the broader planned test strategy, not a
+record that every listed test has run. Automated coverage consists of Express
+route tests with an in-memory Fabric contract stub, IPFS adapter tests with a
+mocked Kubo response, frontend utility regression tests, and Go chaincode
+tests with in-memory stubs. The live synthetic registration, quality decision,
+and transfers documented above are separate from those automated tests. No
+live IPFS upload or chaincode deployment was performed. See
+`docs/IMPLEMENTATION_STATUS.md` for the feature boundary.
+
+Verification results from the preceding implementation pass (historical, before the LAN URL regression test was added):
+
+| Command | Result | Evidence type |
+|---|---:|---|
+| `backend\npm test` | 25 passed, 0 failed | Express route stubs and mocked IPFS adapter |
+| `backend\npm run check` | Passed | Node syntax checks |
+| `frontend\npm test` | 9 passed, 0 failed | Frontend utility tests, including committed/unconfirmed write feedback |
+| `frontend\npm run build` | Passed | Vite production compilation |
+| `go test ./...` | Passed | Go chaincode tests with in-memory stubs |
+| `go vet ./...` | Passed | Go static analysis |
+| Read-only browser checks through Vite at `127.0.0.1:5174` to API at `127.0.0.1:3001` | Passed; API v2.1.0, Fabric connected, 10 batches, batch detail, one history event, and public verify page | Live browser-proxy-to-Fabric reads |
+
+The listener on port 3000 remains untouched because its working directory could
+not be verified. This project uses API port 3001 and Vite port 5174. The table
+above is historical; the 2026-11-25 finalization evidence supersedes its
+read-only-only boundary.
+
+Previous finalization validation run (historical snapshot before 2026-11-25):
+
+| Command | Result | Evidence type |
+|---|---|---|
+| `backend\npm test` | 25 passed, 0 failed after rerun | Express route tests with Fabric contract stubs and IPFS mock. Initial sandbox attempt failed because local ephemeral loopback connections were denied (`EACCES`); rerun with socket permission passed. |
+| `backend\npm run check` | Passed | Node syntax checks |
+| `frontend\npm test` | 12 passed, 0 failed | Utility regressions, including configured LAN QR origin and fallback selection |
+| `frontend\npm run build` | Passed | Vite production compilation |
+| `go test ./...` | Passed | Go chaincode in-memory tests |
+| `go vet ./...` | Passed | Go static analysis |
+| PowerShell parser check for `scripts/start-windows.ps1` | Passed | Syntax only; the launcher was not executed |
+| Read-only GET checks on backend and Vite proxy | Passed: both health responses reported API `2.1.0` and Fabric connected; both batch endpoints returned 10 records (7 pending, 2 approved, 1 rejected; all stage `COLLECTED`); detail/history responses had expected shapes; the Vite `/verify/<batchId>` route returned HTTP 200 | Live reads only; batch identifier omitted from output |
+
+No Fabric write or chaincode deployment was performed during that earlier
+validation snapshot. The phone/LAN network path was not exercised on a second
+device. The current finalization run is recorded at the top of this document.
+
+## Superseded live-write test plan (historical; not executed)
+
+The plan below was prepared before the synthetic workflow authorized and
+executed on 2026-11-25. It was not run; its IDs, identities, and proposed
+operations are stale and must not be used. The actual executed batch and
+operations are recorded in the finalization run above.
+
+A read-only `GET /api/batches` through the browser proxy returned 10 records and
+did not contain either proposed ID below. Recheck immediately before any
+approved run. These identifiers and role actor IDs are proposals, not existing
+ledger records or configured credentials.
+
+| Step | Batch ID | Role and actor ID | Operation and expected effect |
+|---:|---|---|---|
+| 1 | `E2E-SYNTH-20261027-A01` | Collector `E2E-COLLECTOR-20261027` | Register one explicitly synthetic Tulsi batch; expected initial `PENDING`, owner is collector |
+| 2 | `E2E-SYNTH-20261027-R01` | Same Collector | Register a second synthetic batch for the separate rejection path |
+| 3 | `E2E-SYNTH-20261027-A01` | Processor `E2E-PROCESSOR-20261027` | Set quality to `APPROVED`; read back status/history |
+| 4 | `E2E-SYNTH-20261027-R01` | Same Processor | Set quality to `REJECTED`; read back status/history |
+| 5 | `E2E-SYNTH-20261027-A01` | Admin `E2E-ADMIN-20261027` | Transfer to `E2E-DISTRIBUTOR-20261027`; verify owner and event |
+| 6 | `E2E-SYNTH-20261027-A01` | Distributor `E2E-DISTRIBUTOR-20261027` | Transfer to `E2E-RETAILER-20261027`; verifies current-owner authorization and refreshed history |
+
+Use date `2026-10-27`, coordinates `0,0`, quantity `0.001 kg`, and location
+`SYNTHETIC QA DATA - NO PHYSICAL COLLECTION`. Required Collector, Processor,
+Admin, and Distributor tokens must already be privately configured with the
+listed actor IDs; never paste token values into this document or shell history.
+Optional live negative checks (no token registration, Collector quality update,
+and non-owner Distributor transfer) should return 401/403 before chaincode
+submission.
+
+This plan would submit **six ledger-changing transactions**. Registration,
+quality decisions, and both transfers become permanent ledger history; the
+contract has no delete or cleanup operation. The records are deliberately
+synthetic and will remain publicly visible. Quality updates do not record the
+human Processor identity in the deployed transaction. No step is authorized or
+executed by this plan; explicit approval is required for all six writes.
+
+---
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 This document defines the testing strategy, test architecture, test levels, test cases, acceptance criteria, integration tests, security tests, failure tests, traceability tests, and evidence requirements for the Blockchain-Based Botanical Traceability of Ayurvedic Herbs system.

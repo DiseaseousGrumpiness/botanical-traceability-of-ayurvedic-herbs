@@ -1,0 +1,135 @@
+Ministry of Ayush
+Develop a blockchain-based system for botanical traceability of Ayurvedic herbs, including geo-tagging from the point of collection (farmers/wild collectors) to the final Ayurvedic formulation label.
+Software
+SIH25027
+Blockchain & Cybersecurity
+
+You can implement:
+
+Blockchain (Hyperledger Fabric/Ethereum)
+Smart Contracts
+QR Codes
+Geo-tagging
+Supply Chain Tracking
+IPFS for document storage
+Web Dashboard
+Analytics
+
+Farmer
+↓
+
+Geo-tagging
+
+↓
+
+Blockchain Ledger
+
+↓
+
+Processing
+
+↓
+
+Distributor
+
+↓
+
+Retailer
+
+↓
+
+QR Scan
+
+↓
+
+Consumer
+
+Tech:
+
+Hyperledger Fabric
+Ethereum
+Solidity
+IPFS
+React
+Node
+QR verification
+
+You can build:
+
+Farmer Portal
+Manufacturer Portal
+Distributor Portal
+QR Verification
+Smart Contracts
+IPFS document storage
+Geo-tagging
+Admin Dashboard
+Analytics
+
+Tech Stack:
+
+React
+Node.js
+PostgreSQL
+Hyperledger Fabric or Ethereum
+Solidity
+IPFS
+
+Farmer App
+
+↓
+
+Geo Location
+
+↓
+
+QR
+
+↓
+
+Blockchain Ledger
+
+↓
+
+Warehouse
+
+↓
+
+Manufacturer
+
+↓
+
+Quality Reports
+
+↓
+
+IPFS
+
+↓
+
+Consumer Verification
+
+↓
+
+Analytics
+
+↓
+
+Government Portal
+
+Possible additions
+
+AI fraud detection
+Image verification
+Supply chain analytics
+ESG dashboard
+Carbon footprint
+Mobile app
+
+Smart contracts
+QR verification
+Geo-tagging
+Role-based portals
+Blockchain explorer
+IPFS document storage
+Supply chain analytics

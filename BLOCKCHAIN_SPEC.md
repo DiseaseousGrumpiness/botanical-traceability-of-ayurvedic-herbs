@@ -1,5 +1,24 @@
 # BLOCKCHAIN SPECIFICATION
 
+## Deployed interface versus local source
+
+The existing channel is `mychannel`; the deployed chaincode is
+`herb-traceability` version 1.1, sequence 2. Its confirmed transaction
+interfaces include `CreateBatch`, `ReadBatch`, `GetAllBatches`,
+`GetBatchHistory`, `UpdateQualityStatus(batchID, status)`, and
+`TransferBatch(batchID, newOwner, location)`. The deployed package does not
+expose `AddDocumentCID` or `GetDocumentCIDs`. Current local source implements
+those document transactions for proposed sequence 3 and retains the deployed
+two-argument quality signature. Do not infer deployed behavior from local
+source, reset the network, or deploy the upgrade without explicit approval.
+
+The application signs Fabric transactions with its configured backend
+identity. Express role checks do not create chaincode ACLs. The quality
+transaction does not record a human inspector. See
+`blockchain/CHAINCODE_UPGRADE.md` and `docs/IMPLEMENTATION_STATUS.md`.
+
+---
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 This document defines the blockchain architecture, network structure,

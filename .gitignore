@@ -46,3 +46,6 @@ blockchain/chaincode/herb-traceability/herb-traceability-chaincode
 
 # Local audit reports
 terminal-audit-*.txt
+
+# Local production deployment secrets
+/deploy/production.env

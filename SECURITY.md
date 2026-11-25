@@ -1,5 +1,53 @@
 # SECURITY
 
+## As-built controls and limits
+
+The implementation uses a private `AUTH_TOKENS_JSON` environment setting that
+maps bearer tokens to a role and actor ID. Express validates the token and role
+for every write route; the browser holds the token in memory only. Public GET
+routes are read-only. Missing or invalid credentials fail closed. The API
+defaults to loopback binding and limits CORS origins to the configured local
+frontend origins. The environment example contains no usable credentials.
+
+Current route roles are: Collector/Admin for registration; Processor/Admin for
+quality decisions; Processor, Distributor, Retailer, or Admin for transfer,
+with non-admin transfer additionally requiring the authenticated actor ID to
+match the current owner. Processor/Admin may attach documents only when the
+operator has enabled the feature after chaincode upgrade and configured IPFS.
+Consumers have public read-only access.
+
+These are practical project controls, not production identity management. The
+token map has no expiry, automated revocation, login throttling, or persistent
+audit trail; whoever can read the private backend environment can impersonate
+its configured roles. No TLS terminator is configured by this local app, so it
+must remain bound to loopback or be placed behind a correctly configured TLS
+proxy before remote use. Fabric transactions are signed by one backend Fabric
+identity. In particular, the deployed quality transaction records status and
+time but does not authenticate or record the human inspector. Transfer's
+chaincode event uses the stored previous-owner value and does not independently
+authenticate that identity.
+
+Document bytes are sent to a configured Kubo HTTP API and pinned there before
+their CID is submitted to Fabric. IPFS content may be public/immutable depending
+on the chosen network and gateway. A failed ledger submission after a successful
+IPFS upload may leave unreferenced content. The deployed v1.1 contract does not
+support document CIDs; the route remains disabled until an approved chaincode
+upgrade and explicit configuration. No private documents should be uploaded to
+a public IPFS network.
+
+The project does not connect PostgreSQL. Blockchain records show what was
+submitted and preserved; they do not establish physical authenticity, chemical
+quality, location accuracy, or the truth of original data entry.
+
+---
+
+The remaining sections preserve the original security requirements and threat
+model. They are design guidance; they do not assert that every listed control
+is deployed. The as-built controls and limitations above govern current
+demonstrations.
+
+---
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 This document defines the security architecture, controls, threat model, access-control rules, identity requirements, secret-management rules, privacy considerations, and security testing requirements for the Blockchain-Based Botanical Traceability of Ayurvedic Herbs system.

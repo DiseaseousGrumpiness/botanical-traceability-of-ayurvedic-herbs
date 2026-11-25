@@ -1,0 +1,75 @@
+Insider Threat Detection
+
+
+
+Think:
+
+Microsoft Insider Risk
+
+↓
+
+Logs
+
+↓
+
+User Behaviour
+
+↓
+
+AI
+
+↓
+
+Risk Score
+
+↓
+
+Dashboard
+
+↓
+
+Alert
+
+↓
+
+Investigation
+
+Modules:
+
+UEBA
+ML
+SIEM
+Dashboard
+Alerting
+Explainability
+Timeline
+
+Domain: Cybersecurity
+
+This is my #1 choice.
+
+Why?
+
+Companies spend billions on external hackers, but a huge number of breaches happen because of insiders, compromised employees, or stolen credentials.
+
+A mega project here could include:
+
+User & Entity Behavior Analytics (UEBA)
+AI anomaly detection
+Risk scoring
+Privilege escalation detection
+Login pattern analysis
+File access monitoring
+Email anomaly detection
+Dashboard
+Alert engine
+Explainable AI
+Digital forensics timeline
+
+Every team member gets meaningful work:
+
+ML
+Backend
+Frontend
+Security analytics
+Cloud deployment

@@ -1,5 +1,39 @@
 # SYSTEM ARCHITECTURE
 
+> **As-built implementation boundary (read this before the design sections).**
+> The running application currently uses the React/Vite client, Express REST API,
+> Fabric Gateway, and the existing Fabric ledger. PostgreSQL is not connected.
+> IPFS support is implemented as an optional Kubo HTTP API adapter, but document
+> attachment is disabled against deployed chaincode v1.1 sequence 2. The local
+> chaincode source adds `AddDocumentCID` and `GetDocumentCIDs` for a proposed
+> sequence 3; those methods are not live until an operator approves and performs
+> a lifecycle upgrade. See `docs/IMPLEMENTATION_STATUS.md` for verification scope.
+
+The dashboard's primary backend-availability evidence is a successful
+`GetAllBatches` response. `/health` makes a separate read-only `BatchExists`
+query; it is diagnostic and cannot override a successful batch response. Public
+batch, history, and QR reads require no application token. Registration,
+quality, transfer, and post-upgrade document attachment require server-side
+role tokens. These controls protect Express routes; they do not add chaincode
+authorization policies or authenticate human actors inside Fabric.
+
+The deployed quality transaction accepts only `UpdateQualityStatus(batchID,
+status)` and records no human inspector identity. All Fabric transactions are
+signed using the backend's configured Fabric identity. Ledger integrity does
+not prove that the physical herb, location, or original data entry is true.
+
+---
+
+## Scope of the remaining architecture text
+
+The sections below retain the original target design and requirements. Mentions
+of PostgreSQL analytics, mobile applications, government dashboards, and general
+IPFS availability describe planned architecture, not implemented integrations.
+Use the as-built boundary above and `docs/IMPLEMENTATION_STATUS.md` when reporting
+what the current code can demonstrate.
+
+---
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 This document defines the technical architecture of the system described in

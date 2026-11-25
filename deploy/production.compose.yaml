@@ -1,0 +1,98 @@
+services:
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    image: botanical-traceability-backend:local
+    restart: unless-stopped
+    user: "${BOTANICAL_UID:-10001}:${BOTANICAL_GID:-10001}"
+    environment:
+      NODE_ENV: production
+      BOTANICAL_API_PORT: "3001"
+      BACKEND_HOST: 0.0.0.0
+      WEB_ORIGINS: https://${APP_DOMAIN:?Set APP_DOMAIN}
+      AUTH_TOKENS_JSON: ${AUTH_TOKENS_JSON:?Set AUTH_TOKENS_JSON}
+      FABRIC_PEER_ENDPOINT: ${FABRIC_PEER_ENDPOINT:?Set FABRIC_PEER_ENDPOINT on the private Fabric network}
+      FABRIC_PEER_HOST_ALIAS: ${FABRIC_PEER_HOST_ALIAS:?Set FABRIC_PEER_HOST_ALIAS to match the peer TLS certificate}
+      FABRIC_MSP_ID: ${FABRIC_MSP_ID:?Set FABRIC_MSP_ID}
+      FABRIC_CHANNEL: ${FABRIC_CHANNEL:?Set FABRIC_CHANNEL}
+      FABRIC_CHAINCODE: ${FABRIC_CHAINCODE:?Set FABRIC_CHAINCODE}
+      FABRIC_USER_MSP_DIR: /run/fabric/msp
+      FABRIC_PEER_TLS_CERT: /run/fabric/tls/ca.crt
+      IPFS_API_URL: ""
+      IPFS_API_TOKEN: ""
+      IPFS_GATEWAY_URL: ""
+      DOCUMENT_CID_ENABLED: "false"
+      DOCUMENT_CID_CHAINCODE_SEQUENCE: "2"
+    volumes:
+      - ${FABRIC_MSP_HOST_PATH:?Set FABRIC_MSP_HOST_PATH}:/run/fabric/msp:ro
+      - ${FABRIC_TLS_CERT_HOST_PATH:?Set FABRIC_TLS_CERT_HOST_PATH}:/run/fabric/tls/ca.crt:ro
+    expose:
+      - "3001"
+    networks:
+      - app_private
+      - fabric_private
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3001/health').then(r=>r.json()).then(x=>process.exit(x.fabricConnected===true?0:1)).catch(()=>process.exit(1))"
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.production
+      args:
+        VITE_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
+    image: botanical-traceability-frontend:local
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    expose:
+      - "8080"
+    networks:
+      - app_private
+      - edge
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://127.0.0.1:8080/]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      frontend:
+        condition: service_healthy
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - edge
+
+networks:
+  app_private:
+    internal: true
+  edge: {}
+  fabric_private:
+    external: true
+    name: ${FABRIC_NETWORK_NAME:?Set FABRIC_NETWORK_NAME to the existing Fabric Docker network}
+
+volumes:
+  caddy_data:
+  caddy_config:

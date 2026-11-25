@@ -1,5 +1,18 @@
 # WORKFLOW SPECIFICATION
 
+## Implemented workflow boundary
+
+The workflow below describes the target supply-chain process. In the current
+application, collector registration, processor quality decisions, and
+owner-authorized transfers are exposed through protected Express routes; QR
+verification, batch lookup, and ledger history are public reads. IPFS document
+attachment remains disabled against the deployed v1.1 sequence 2 contract.
+The project does not establish physical authenticity or the truth of the
+initial submission. The actual feature status is maintained in
+`docs/IMPLEMENTATION_STATUS.md`.
+
+---
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 ---
