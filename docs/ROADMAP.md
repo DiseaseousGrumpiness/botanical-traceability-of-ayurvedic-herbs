@@ -1,5 +1,9 @@
 # ROADMAP
 
+> Planning document, not an as-built status report. Some proposed capabilities
+> in this roadmap are not implemented or deployed. Use
+> [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for current evidence.
+
 ## Blockchain-Based Botanical Traceability of Ayurvedic Herbs
 
 This document defines the implementation roadmap for the Blockchain-Based Botanical Traceability of Ayurvedic Herbs project.

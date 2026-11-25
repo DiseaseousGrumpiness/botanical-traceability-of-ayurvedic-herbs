@@ -12,6 +12,25 @@ The dashboard's batch query is the primary availability signal. `/health` is a s
 
 Blockchain records preserve submitted data; they do not prove physical herb identity, chemical quality, collection location, or the truth of a user's initial submission.
 
+## Repository guide
+
+The source is grouped by application component. Project specifications and
+technical documentation are in [`docs/`](docs/README.md); academic reports,
+presentation drafts, and SIH reference materials are grouped below that folder.
+The prepared final demonstration deck remains under `submission/`.
+
+```text
+backend/                 Express API and Fabric/IPFS adapters
+blockchain/              Chaincode source, tests, and upgrade notes
+database/                Reserved placeholder; PostgreSQL is not implemented
+deploy/                  Prepared production Compose and reverse-proxy config
+docs/                    Specifications, operations docs, reports, references
+frontend/                React/Vite application
+ipfs/                    Reserved placeholder; CID writes await deployed support
+scripts/                 Safe Windows startup launcher
+submission/              Final submission deliverable
+```
+
 ## Requirements
 
 - Windows 10/11 and PowerShell 5.1+
@@ -115,8 +134,11 @@ Backend HTTP tests use an in-memory Fabric contract stub; IPFS tests use a mock 
 ## Operations and support
 
 - See [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) for verified and gated features.
-- See [ARCHITECTURE.md](ARCHITECTURE.md) for the as-built architecture.
-- See [SECURITY.md](SECURITY.md) for token roles, boundaries, and limitations.
+- See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the as-built architecture.
+- See [docs/SECURITY.md](docs/SECURITY.md) for token roles, boundaries, and limitations.
+- See [docs/TESTING.md](docs/TESTING.md) for test strategy and recorded evidence.
+- See [docs/reports/](docs/reports/) and [docs/presentations/](docs/presentations/) for preserved academic drafts and review decks.
+- See [docs/references/](docs/references/) for source problem-statement files; the supplied materials include both SIH1775 and SIH25027 identifiers, so the original scope document is retained unchanged.
 - See [blockchain/CHAINCODE_UPGRADE.md](blockchain/CHAINCODE_UPGRADE.md) for the proposed state-preserving document CID upgrade. Do not execute it without network-operator approval.
 - See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for production architecture assessment and the prepared app container configuration. No public deployment has been made.
 - Troubleshooting guidance and exact environment fields are in this README and `backend/.env.example`.
